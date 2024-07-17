@@ -1,3 +1,5 @@
+-- credits vanis for providing new anticheat data
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage");
 local tablefind = table.find;
 local MainEvent = ReplicatedStorage.MainEvent;
@@ -14,6 +16,22 @@ local Flags = {
 	"CHECKER",
 	"GUI_CHECK"
 };
+
+local Player = game:GetService("Players").LocalPlayer;
+getsenv(Player.Character.Animate).checkingSPEED = function()
+	return;
+end;
+
+for i, v in pairs(getconnections(Player.Character.HumanoidRootPart:GetPropertyChangedSignal("CFrame"))) do
+	v:Disable();
+end;
+
+Player.CharacterAdded:Connect(function()
+	getsenv(Player.Character.Animate).checkingSPEED = function()
+		return;
+	end;
+end);
+
 
 local __namecall;
 __namecall = hookmetamethod(game, "__namecall", function(...)
