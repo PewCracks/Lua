@@ -2,9 +2,17 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage");
 local tablefind = table.find;
 local MainEvent = ReplicatedStorage.MainEvent;
 local Flags = {
-	"CHECKER_1",
+	"checkingSPEED",
+	"BANREMOTE",
+	"PERMAIDBAN",
+	"KICKREMOTE",
+	"BR_KICKPC",
+	"BR_KICKMOBILE",
+	"OneMoreTime",
 	"TeleportDetect",
-	"OneMoreTime"
+	"CHECKER_1",
+	"CHECKER",
+	"GUI_CHECK"
 };
 
 local __namecall;
