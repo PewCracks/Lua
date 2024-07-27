@@ -1,47 +1,107 @@
--- // For learning purposes. GitHub: PewCracks
+--[[
+    For learning purposes. GitHub: PewCracks
 
--- // They haven't really updated their security, this is to teach them another lesson :^)
--- \\ If these shit executors continue to not support hookmetamethod, I'll release a version without hookmetamethod, or well I'll update this one.
+    What's new? :^)
 
-local Id = tostring(game:GetService("Players").LocalPlayer.UserId)
+    Improved stability!!!!
+    I've made it so, it doesn't require any sort of "special" functions, such as "hookmetamethod".
+    Also made sure the ModIds and AdminIds table is actually dynamic :) AND that he can't do much to patch this!!
+    If he somehow did it, it would get bypassed within minutes.
 
-local Format, Rep, Match = string.format, string.rep, string.match;
+    If the developers of swagmode see this:
 
-local Get, index = game["HttpGet"];
-local Http = newcclosure(function(self, Url)
-    if Match(Url, "swagdif") then
-        return Format([[
-            local id = {%s};
+    I'll gladly help you patch all of the vulnerabilities.
+    On top of that I'll help you secure it some more, but...
+    everything obviously comes with a price.
+]]
 
-            return id;
-        ]], Rep(Format("%s, ", Id), 21))
-    elseif Match(Url, "whitelist.raw") then
-        return Format([[
-            ModIDS = {%s};
+local Players = game:GetService("Players")
+local OldGame = game;
 
-            local Data = Instance.new("Folder", workspace)
-            Data["Name"] = "Data_SM"
+local GlobalEnvironment = getgenv()
+local AdminIds, ModIds = {}, {};
 
-            return ModIDS;
-        ]], Rep(Format("%s, ", Id), 19577))
-    else
-        return Get(self, Url)
-    end;
-end)
+local Format, Match = string.format, string.match;
+local Concat, Freeze = table.concat, table.freeze;
 
-index = hookmetamethod(game, "__index", function(self, Key)
-    if checkcaller() then
-        if self == game and Key == "HttpGet" then
-            return Http;
+-- // REAL!
+for i = 1, 19577 do
+    ModIds[i] = math.random(100000, 10000000)
+end;
+
+for i = 1,21 do
+    AdminIds[i] = math.random(100000, 10000000)
+end;
+
+-- // We wont do AdminIds, cause he can add a hardcheck for that, soo rip.
+ModIds[math.random(1, #AdminIds)] = Players.LocalPlayer.UserId;
+
+-- // Sandbox
+local FakeGame = setmetatable({}, {
+    __index = function(self, Index)
+        local _,Service = pcall(function()
+            return OldGame[Index];
+        end)
+
+        if Index == "HttpGet" then
+            return function(self, Index)
+                return function(Url)
+                    if Match(Url, "swagdif") then
+                        return Format([[
+                            local id = {%s};
+                
+                            return id;
+                        ]], Concat(AdminIds, ", "), Id)
+                    elseif Match(Url, "whitelist.raw") then
+                        return Format([[
+                            ModIDS = {%s};
+                
+                            local Data = Instance.new("Folder", workspace)
+                            Data["Name"] = "Data_SM";
+                
+                            return ModIDS;
+                        ]], Concat(ModIds, ", "))
+                    else
+                        return OldGame:HttpGet(Url)
+                    end;
+                end;
+            end;
+        elseif Service and type(Service) == "function" then
+            return function(self, Index)
+                return Service(OldGame, Index)
+            end;
+        else
+            return OldGame:GetService(Index) or OldGame[Index];
         end;
     end;
-    return index(self, Key)
-end)
+})
 
---loadstring(game:HttpGet("https://raw.githubusercontent.com/lerkermer/lua-projects/master/SwagModeV002"))()
+Freeze(FakeGame) -- we freeze the table just incase he tries doing funny business :^)
 
+game = FakeGame;
 
--- backed up version, just incase he tries to patch it - XD
+-- // OBVIOUSLY I'm not dumb... SO I SPOOFED THESE!
+local oldtype, oldtypeof = GlobalEnvironment["type"], GlobalEnvironment["typeof"];
+
+GlobalEnvironment["type"] = function(Object)
+    if FakeGame == Object then
+        return "userdata";
+    end;
+
+    return oldtype(Object)
+end;
+
+GlobalEnvironment["typeof"] = function(Object)
+    if FakeGame == Object then
+        return "Instance";
+    end;
+
+    return oldtypeof(Object)
+end;
+
+-- loadstring(game:HttpGet("https://raw.githubusercontent.com/lerkermer/lua-projects/master/SwagModeV002"))()
+
+-- // backed up version, just incase he tries to patch it - XD
 
 -- This file was generated using Luraph Obfuscator v14.0.3 [https://lura.ph
 print('super test')
