@@ -57,7 +57,8 @@ end;
 
 -- // Had to add this cause these ShitSploits are horrible
 local ShitSploits = {
-    "Solara"
+    "Solara",
+    "Wave"
 };
 
 -- // JUST INCASE (YOU NEVER KNOW)
