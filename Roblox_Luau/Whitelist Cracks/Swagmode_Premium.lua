@@ -3,10 +3,8 @@
 
     What's new? :^)
 
-    Improved stability!!!!
-    I've made it so, it doesn't require any sort of "special" functions, such as "hookmetamethod".
-    Also made sure the ModIds and AdminIds table is actually dynamic :) AND that he can't do much to patch this!!
-    If he somehow did it, it would get bypassed within minutes.
+    Solara is now supported wooo!!!
+
 
     If the developers of swagmode see this:
 
@@ -18,11 +16,11 @@
 local Players = game:GetService("Players")
 local OldGame = game;
 
-local GlobalEnvironment = getgenv()
+local GlobalEnvironment = getfenv()
 local AdminIds, ModIds = {}, {};
 
 local Format, Match = string.format, string.match;
-local Concat, Freeze = table.concat, table.freeze;
+local Concat, Freeze, TFind = table.concat, table.freeze, table.find;
 
 -- // REAL!
 for i = 1, 19577 do
@@ -36,6 +34,39 @@ end;
 -- // We wont do AdminIds, cause he can add a hardcheck for that, soo rip.
 ModIds[math.random(1, #AdminIds)] = Players.LocalPlayer.UserId;
 
+local function FakeHttpGet(Url)
+    if Match(Url, "swagdif") then
+        return Format([[
+            local id = {%s};
+
+            return id;
+        ]], Concat(AdminIds, ", "), Id)
+    elseif Match(Url, "whitelist.raw") then
+        return Format([[
+            ModIDS = {%s};
+
+            local Data = Instance.new("Folder", workspace)
+            Data["Name"] = "Data_SM";
+
+            return ModIDS;
+        ]], Concat(ModIds, ", "))
+    else
+        return OldGame:HttpGet(Url)
+    end;
+end;
+
+-- // Had to add this cause these ShitSploits are horrible
+local ShitSploits = {
+    "Solara"
+};
+
+-- // JUST INCASE (YOU NEVER KNOW)
+if not identifyexecutor then
+    identifyexecutor = function()
+        return "ShitSploit", "v0"
+    end;
+end;
+
 -- // Sandbox
 local FakeGame = setmetatable({}, {
     __index = function(self, Index)
@@ -45,26 +76,7 @@ local FakeGame = setmetatable({}, {
 
         if Index == "HttpGet" then
             return function(self, Index)
-                return function(Url)
-                    if Match(Url, "swagdif") then
-                        return Format([[
-                            local id = {%s};
-                
-                            return id;
-                        ]], Concat(AdminIds, ", "), Id)
-                    elseif Match(Url, "whitelist.raw") then
-                        return Format([[
-                            ModIDS = {%s};
-                
-                            local Data = Instance.new("Folder", workspace)
-                            Data["Name"] = "Data_SM";
-                
-                            return ModIDS;
-                        ]], Concat(ModIds, ", "))
-                    else
-                        return OldGame:HttpGet(Url)
-                    end;
-                end;
+                return TFind(ShitSploits, "" .. identifyexecutor()) and FakeHttpGet(Index) or FakeHttpGet;
             end;
         elseif Service and type(Service) == "function" then
             return function(self, Index)
