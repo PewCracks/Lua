@@ -4,7 +4,7 @@
     What's new? :^)
 
     Solara is now supported wooo!!!
-
+    Wave too!
 
     If the developers of swagmode see this:
 
