@@ -2,13 +2,6 @@ local Base64, b = {}, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
 
 local GSub, Sub, Find, Byte, Char = string.gsub, string.sub, string.find, string.byte, string.char;
 
--- Roblox shit
-if _VERSION == "Luau" and clonefunction then
-    local C = clonefunction;
-
-    GSub, Sub, Find, Byte, Char = C(GSub), C(Sub), C(Find), C(Byte), C(Char);
-end;
-
 function Base64.encode(data)
 	return GSub(GSub(data, ".", function(x)
 		local r, b = "", Byte(x);
