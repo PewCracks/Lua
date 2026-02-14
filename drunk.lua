@@ -186,7 +186,7 @@ connections[#connections + 1] = runService.RenderStepped:Connect(function(dt)
 	currentLean += (leanTarget - currentLean) * .1;
 	effects.bodyGyro.CFrame = CFrame.new(humanoidRootPart.Position) * CFrame.Angles(0, humanoidRootPart.Orientation.Y * math.pi/180, 0) * CFrame.Angles(0, 0, math.rad(currentLean))
 
-	camera.CFrame *= CFrame.Angles(getNoise(.8, 1) * .07 * progress, getNoise(0.8,2)*0.1*progress, math.rad(math.sin(t * 1.2) * CONFIG.tilt * progress))
+	camera.CFrame *= CFrame.Angles(getNoise(.8, 1) * .07 * progress, getNoise(.8 ,2) * .1 * progress, math.rad(math.sin(t * 1.2) * CONFIG.tilt * progress))
 
 	local fatigue = (math.sin(t * .5) + 1) * .5;
 	local twitch = getNoise(4, 100)
