@@ -205,34 +205,22 @@ end
 
 
 local function get_bitstream(o)
-  local bs
-  if is_bitstream[o] then
-    return o
-  elseif io.type(o) == 'file' then
-    bs = bitstream_from_bytestream(bytestream_from_file(o))
-  elseif type(o) == 'string' then
-    bs = bitstream_from_bytestream(bytestream_from_string(o))
-  elseif type(o) == 'function' then
-    bs = bitstream_from_bytestream(bytestream_from_function(o))
-  else
-    runtime_error 'unrecognized type'
-  end
-  return bs
+    if type(o) == "string" then
+        return bitstream_from_bytestream(bytestream_from_string(o))
+    elseif type(o) == "function" then
+        return bitstream_from_bytestream(bytestream_from_function(o))
+    else
+        error("Input must be string or function")
+    end
 end
-
 
 local function get_obytestream(o)
-  local bs
-  if io.type(o) == 'file' then
-    bs = function(sbyte) o:write(string_char(sbyte)) end
-  elseif type(o) == 'function' then
-    bs = o
-  else
-    runtime_error('unrecognized type: ' .. tostring(o))
-  end
-  return bs
+    if type(o) == "function" then
+        return o
+    else
+        error("Output must be a function")
+    end
 end
-
 
 local function HuffmanTable(init, is_full)
   local t = {}
